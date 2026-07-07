@@ -1,0 +1,455 @@
+/* ---------------------------------------------------------------
+   Tokens
+--------------------------------------------------------------- */
+
+:root {
+  /* Color — true neutrals for ink/paper, one confident accent carries voice */
+  --paper: oklch(0.985 0 0);
+  --surface: oklch(0.955 0.002 264);
+  --line: oklch(0.88 0.003 264);
+  --ink: oklch(0.18 0.004 264);
+  --ink-soft: oklch(0.42 0.004 264);
+  --accent: oklch(0.58 0.18 38);       /* decorative: dot, focus ring, hover wash */
+  --accent-text: oklch(0.46 0.16 36);  /* links & text on paper — verified ≥4.5:1 */
+
+  /* Spacing — 4pt base scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+
+  /* Type scale */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: clamp(1.375rem, 1.15rem + 1vw, 1.75rem);
+  --text-2xl: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+  --text-hero: clamp(2.75rem, 2rem + 5vw, 5.25rem);
+
+  /* Motion */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --measure: 40ch;
+}
+
+/* ---------------------------------------------------------------
+   Reset
+--------------------------------------------------------------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: var(--text-base);
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, ul, nav { margin: 0; padding: 0; }
+ul { list-style: none; }
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+img { max-width: 100%; display: block; }
+
+/* ---------------------------------------------------------------
+   Focus & accessibility
+--------------------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10;
+  padding: var(--space-3) var(--space-4);
+  background: var(--ink);
+  color: var(--paper);
+}
+.skip-link:focus-visible {
+  left: var(--space-4);
+  top: var(--space-4);
+}
+
+/* ---------------------------------------------------------------
+   Layout primitives
+--------------------------------------------------------------- */
+
+.section__inner,
+.hero__inner {
+  max-width: 44rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+main > section,
+footer.contact {
+  padding-block: clamp(var(--space-8), 8vw, var(--space-9));
+  border-top: 1px solid var(--line);
+}
+
+/* ---------------------------------------------------------------
+   Hero
+--------------------------------------------------------------- */
+
+.hero {
+  padding-block: clamp(var(--space-9), 12vw, var(--space-10)) clamp(var(--space-8), 8vw, var(--space-9));
+}
+
+.hero__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  margin-bottom: var(--space-5);
+}
+
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.hero__name {
+  font-size: var(--text-hero);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: var(--space-4);
+}
+
+.hero__role {
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-bottom: var(--space-5);
+}
+
+.hero__tagline {
+  font-size: var(--text-lg);
+  max-width: var(--measure);
+  margin-bottom: var(--space-6);
+}
+
+.hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+.hero__links a {
+  position: relative;
+  padding-bottom: 0.2em;
+}
+
+.hero__links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0.3);
+  transform-origin: left;
+  opacity: 0.4;
+  transition: transform 0.25s var(--ease-out-quart), opacity 0.25s var(--ease-out-quart);
+}
+
+.hero__links a:hover::after,
+.hero__links a:focus-visible::after {
+  transform: scaleX(1);
+  opacity: 1;
+  background: var(--accent-text);
+}
+
+.hero__links a:hover,
+.hero__links a:focus-visible {
+  color: var(--accent-text);
+}
+
+/* Hero entrance — pure CSS, always plays to a visible end state */
+.hero__status, .hero__name, .hero__role, .hero__tagline, .hero__links {
+  animation: hero-in 0.7s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------------------------------------------------------
+   About
+--------------------------------------------------------------- */
+
+.about h2 { margin-bottom: var(--space-4); }
+.about p { max-width: var(--measure); }
+
+/* ---------------------------------------------------------------
+   Section headings (shared)
+--------------------------------------------------------------- */
+
+main h2, footer h2 {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-7);
+}
+
+/* ---------------------------------------------------------------
+   Experience
+--------------------------------------------------------------- */
+
+.entry-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.entry {
+  padding-block: var(--space-5);
+}
+
+.entry + .entry {
+  border-top: 1px solid var(--line);
+}
+
+.entry:first-child { padding-top: 0; }
+.entry:last-child { padding-bottom: 0; }
+
+.entry__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
+}
+
+.entry__head h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.entry__company {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.entry__dates {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.entry__desc { max-width: var(--measure); margin-bottom: var(--space-2); }
+
+.entry__tools {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  margin-bottom: 0 !important;
+}
+
+/* ---------------------------------------------------------------
+   Projects
+--------------------------------------------------------------- */
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.project {
+  padding-block: var(--space-5);
+}
+
+.project + .project {
+  border-top: 1px solid var(--line);
+}
+
+.project:first-child { padding-top: 0; }
+.project:last-child { padding-bottom: 0; }
+
+.project h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+
+.project h3 a {
+  transition: color 0.2s var(--ease-out-quart);
+}
+
+.project h3 a:hover,
+.project h3 a:focus-visible {
+  color: var(--accent-text);
+}
+
+.project h3 a span { opacity: 0.5; }
+
+.project p { max-width: var(--measure); margin-bottom: var(--space-2); }
+
+.project__tags {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  margin-bottom: 0 !important;
+}
+
+/* ---------------------------------------------------------------
+   Skills
+--------------------------------------------------------------- */
+
+.skills__list {
+  max-width: var(--measure);
+  color: var(--ink-soft);
+  font-size: var(--text-base);
+  line-height: 1.8;
+}
+
+/* ---------------------------------------------------------------
+   Contact / footer
+--------------------------------------------------------------- */
+
+footer.contact {
+  padding-block: clamp(var(--space-9), 10vw, var(--space-10));
+}
+
+footer.contact p:not(.contact__footnote) {
+  max-width: var(--measure);
+  margin-bottom: var(--space-6);
+}
+
+.contact__email {
+  display: inline-block;
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-6);
+  color: var(--accent-text);
+}
+
+.contact__email:hover,
+.contact__email:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.15em;
+}
+
+.contact__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  font-weight: 500;
+  margin-bottom: var(--space-8);
+}
+
+.contact__links a {
+  position: relative;
+  padding-bottom: 0.2em;
+}
+
+.contact__links a::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0.3);
+  transform-origin: left;
+  opacity: 0.4;
+  transition: transform 0.25s var(--ease-out-quart), opacity 0.25s var(--ease-out-quart);
+}
+
+.contact__links a:hover::after,
+.contact__links a:focus-visible::after {
+  transform: scaleX(1);
+  opacity: 1;
+  background: var(--accent-text);
+}
+
+.contact__links a:hover,
+.contact__links a:focus-visible {
+  color: var(--accent-text);
+}
+
+.contact__footnote {
+  font-size: var(--text-xs);
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------------
+   Scroll reveal — default visible; only hidden pre-reveal when
+   JS has confirmed motion is welcome (see inline head script).
+--------------------------------------------------------------- */
+
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.js-anim .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s var(--ease-out-quart), transform 0.5s var(--ease-out-quart);
+}
+
+.js-anim .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.js-anim .entry.reveal,
+.js-anim .project.reveal {
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* ---------------------------------------------------------------
+   Responsive
+--------------------------------------------------------------- */
+
+@media (max-width: 30rem) {
+  .entry__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Reduced motion
+--------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
