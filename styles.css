@@ -3,14 +3,16 @@
 --------------------------------------------------------------- */
 
 :root {
-  /* Color — true neutrals for ink/paper, one confident accent carries voice */
-  --paper: oklch(0.985 0 0);
-  --surface: oklch(0.955 0.002 264);
-  --line: oklch(0.88 0.003 264);
-  --ink: oklch(0.18 0.004 264);
-  --ink-soft: oklch(0.42 0.004 264);
-  --accent: oklch(0.58 0.18 38);       /* decorative: dot, focus ring, hover wash */
-  --accent-text: oklch(0.46 0.16 36);  /* links & text on paper — verified ≥4.5:1 */
+  /* Color — olive-tinted neutrals, olive carries voice, ochre is the secondary beat */
+  --paper: oklch(0.98 0.008 122);
+  --surface: oklch(0.95 0.015 122);
+  --line: oklch(0.87 0.015 122);
+  --ink: oklch(0.19 0.01 122);
+  --ink-soft: oklch(0.4 0.02 122);
+  --accent: oklch(0.58 0.14 118);              /* olive — decorative: dot, focus ring, hover wash */
+  --accent-text: oklch(0.46 0.11 118);         /* olive — links & text on paper — verified ≥4.5:1 */
+  --accent-secondary: oklch(0.68 0.14 78);     /* ochre — decorative: doodles, tag accents */
+  --accent-secondary-text: oklch(0.5 0.14 75); /* ochre — text use (tools/tags) — verified ≥4.5:1 */
 
   /* Spacing — 4pt base scale */
   --space-1: 0.25rem;
@@ -38,6 +40,15 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
   --measure: 40ch;
+
+  /* Hand-drawn botanical sprig, reused at different sizes/colors/rotations as a doodle accent */
+  --doodle-sprig: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 90'%3E%3Cpath d='M30 85 C28 70 32 60 30 50 C15 48 8 38 12 28 C20 30 26 36 30 45 C34 34 42 28 50 30 C46 40 38 48 30 50 C32 38 28 25 30 10' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  /* Hand-drawn spark mark, a distinct sibling to the sprig for the Projects heading */
+  --doodle-spark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cpath d='M30 4 C32 18 32 18 30 30 C28 18 28 18 30 4 Z M30 56 C28 42 28 42 30 30 C32 42 32 42 30 56 Z M4 30 C18 28 18 28 30 30 C18 32 18 32 4 30 Z M56 30 C42 32 42 32 30 30 C42 28 42 28 56 30 Z' fill='black'/%3E%3C/svg%3E");
+
+  /* Typography — serif carries display moments (name, section headings), grotesk carries body/UI */
+  --font-body: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
 }
 
 /* ---------------------------------------------------------------
@@ -52,7 +63,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--font-body);
   font-size: var(--text-base);
   line-height: 1.6;
   font-optical-sizing: auto;
@@ -114,7 +125,34 @@ footer.contact {
 --------------------------------------------------------------- */
 
 .hero {
+  position: relative;
+  background: var(--surface);
   padding-block: clamp(var(--space-9), 12vw, var(--space-10)) clamp(var(--space-8), 8vw, var(--space-9));
+  overflow: hidden;
+}
+
+/* Botanical sprig doodle — pure CSS mask, no markup needed */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: clamp(1.5rem, 5vw, 3rem);
+  right: clamp(1.25rem, 4vw, 3.5rem);
+  width: 4.5rem;
+  height: 6.75rem;
+  background-color: var(--accent);
+  -webkit-mask: var(--doodle-sprig) center / contain no-repeat;
+  mask: var(--doodle-sprig) center / contain no-repeat;
+  animation: hero-doodle-in 0.7s var(--ease-out-expo) both;
+  animation-delay: calc(5 * 90ms);
+}
+
+@keyframes hero-doodle-in {
+  from { opacity: 0; transform: rotate(9deg) translateY(14px); }
+  to { opacity: 0.9; transform: rotate(9deg) translateY(0); }
+}
+
+@media (max-width: 36rem) {
+  .hero::before { display: none; }
 }
 
 .hero__status {
@@ -135,6 +173,7 @@ footer.contact {
 }
 
 .hero__name {
+  font-family: var(--font-display);
   font-size: var(--text-hero);
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -209,14 +248,42 @@ footer.contact {
    About
 --------------------------------------------------------------- */
 
-.about h2 { margin-bottom: var(--space-4); }
+.about h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
 .about p { max-width: var(--measure); }
+
+.about h2::before {
+  content: '';
+  width: 1.5rem;
+  height: 2.25rem;
+  background-color: var(--accent-secondary);
+  -webkit-mask: var(--doodle-sprig) center / contain no-repeat;
+  mask: var(--doodle-sprig) center / contain no-repeat;
+  transform: rotate(-10deg);
+  opacity: 1;
+}
+
+.js-anim .about h2::before {
+  opacity: 0;
+  transform: rotate(-10deg) scale(0.75);
+  transition: opacity 0.6s var(--ease-out-quart) 0.15s, transform 0.6s var(--ease-out-quart) 0.15s;
+}
+
+.js-anim .about.is-visible h2::before {
+  opacity: 1;
+  transform: rotate(-10deg) scale(1);
+}
 
 /* ---------------------------------------------------------------
    Section headings (shared)
 --------------------------------------------------------------- */
 
 main h2, footer h2 {
+  font-family: var(--font-display);
   font-size: var(--text-2xl);
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -233,15 +300,38 @@ main h2, footer h2 {
 }
 
 .entry {
+  position: relative;
   padding-block: var(--space-5);
+  padding-left: 1.75rem;
 }
 
-.entry + .entry {
-  border-top: 1px solid var(--line);
+/* Timeline: a per-entry line segment (stacks into one continuous rule) plus a dot on top */
+.entry::before {
+  content: '';
+  position: absolute;
+  left: 0.5625rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--line);
+}
+
+.entry::after {
+  content: '';
+  position: absolute;
+  left: 0.3125rem;
+  top: 0.8rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--paper);
 }
 
 .entry:first-child { padding-top: 0; }
 .entry:last-child { padding-bottom: 0; }
+.entry:first-child::before { top: 0.8rem; }
+.entry:last-child::before { bottom: calc(100% - 0.8rem); }
 
 .entry__head {
   display: flex;
@@ -273,13 +363,41 @@ main h2, footer h2 {
 
 .entry__tools {
   font-size: var(--text-sm);
-  color: var(--ink-soft);
+  color: var(--accent-secondary-text);
   margin-bottom: 0 !important;
 }
 
 /* ---------------------------------------------------------------
    Projects
 --------------------------------------------------------------- */
+
+#projects-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+#projects-heading::before {
+  content: '';
+  width: 1.375rem;
+  height: 1.375rem;
+  background-color: var(--accent-secondary);
+  -webkit-mask: var(--doodle-spark) center / contain no-repeat;
+  mask: var(--doodle-spark) center / contain no-repeat;
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.js-anim #projects-heading::before {
+  opacity: 0;
+  transform: scale(0.5) rotate(-20deg);
+  transition: opacity 0.5s var(--ease-out-quart) 0.1s, transform 0.5s var(--ease-out-quart) 0.1s;
+}
+
+.js-anim #projects-heading.is-visible::before {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
 
 .project-list {
   display: flex;
@@ -318,7 +436,7 @@ main h2, footer h2 {
 
 .project__tags {
   font-size: var(--text-sm);
-  color: var(--ink-soft);
+  color: var(--accent-secondary-text);
   margin-bottom: 0 !important;
 }
 
@@ -327,10 +445,27 @@ main h2, footer h2 {
 --------------------------------------------------------------- */
 
 .skills__list {
-  max-width: var(--measure);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.skills__list li {
+  font-size: var(--text-sm);
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
   color: var(--ink-soft);
-  font-size: var(--text-base);
-  line-height: 1.8;
+}
+
+.skills__list li:nth-child(odd) {
+  border-color: var(--accent-text);
+  color: var(--accent-text);
+}
+
+.skills__list li:nth-child(even) {
+  border-color: var(--accent-secondary-text);
+  color: var(--accent-secondary-text);
 }
 
 /* ---------------------------------------------------------------
@@ -338,12 +473,41 @@ main h2, footer h2 {
 --------------------------------------------------------------- */
 
 footer.contact {
+  background: var(--surface);
   padding-block: clamp(var(--space-9), 10vw, var(--space-10));
 }
 
 footer.contact p:not(.contact__footnote) {
   max-width: var(--measure);
   margin-bottom: var(--space-6);
+}
+
+#contact-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+#contact-heading::before {
+  content: '';
+  width: 1.75rem;
+  height: 2.625rem;
+  background-color: var(--accent);
+  -webkit-mask: var(--doodle-sprig) center / contain no-repeat;
+  mask: var(--doodle-sprig) center / contain no-repeat;
+  transform: scaleX(-1) rotate(-7deg);
+  opacity: 1;
+}
+
+.js-anim #contact-heading::before {
+  opacity: 0;
+  transform: scaleX(-1) rotate(-7deg) scale(0.75);
+  transition: opacity 0.6s var(--ease-out-quart) 0.15s, transform 0.6s var(--ease-out-quart) 0.15s;
+}
+
+.js-anim .contact.is-visible #contact-heading::before {
+  opacity: 1;
+  transform: scaleX(-1) rotate(-7deg) scale(1);
 }
 
 .contact__email {
