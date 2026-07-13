@@ -5,14 +5,14 @@
 :root {
   /* Color — olive-tinted neutrals, olive carries voice, ochre is the secondary beat */
   --paper: oklch(0.98 0.008 122);
-  --surface: oklch(0.95 0.015 122);
-  --line: oklch(0.87 0.015 122);
+  --surface: oklch(0.9 0.025 122);              /* darkened from 0.95 — was only 1.09:1 vs paper, invisible except beside a heading cue */
+  --line: oklch(0.8 0.02 122);                  /* darkened to stay visible against the now-darker surface too */
   --ink: oklch(0.19 0.01 122);
   --ink-soft: oklch(0.4 0.02 122);
-  --accent: oklch(0.58 0.14 118);              /* olive — decorative: dot, focus ring, hover wash */
-  --accent-text: oklch(0.46 0.11 118);         /* olive — links & text on paper — verified ≥4.5:1 */
-  --accent-secondary: oklch(0.68 0.14 78);     /* ochre — decorative: doodles, tag accents */
-  --accent-secondary-text: oklch(0.5 0.14 75); /* ochre — text use (tools/tags) — verified ≥4.5:1 */
+  --accent: oklch(0.58 0.14 118);               /* olive — decorative: dot, focus ring, hover wash */
+  --accent-text: oklch(0.46 0.11 118);          /* olive — links & text on paper/surface — verified ≥4.5:1 on both */
+  --accent-secondary: oklch(0.68 0.14 78);      /* ochre — decorative: doodles, tag accents */
+  --accent-secondary-text: oklch(0.44 0.14 75); /* ochre — darkened so it still clears ≥4.5:1 on the new surface too */
 
   /* Spacing — 4pt base scale */
   --space-1: 0.25rem;
@@ -45,7 +45,6 @@
   --doodle-sprig: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 90'%3E%3Cpath d='M30 85 C28 70 32 60 30 50 C15 48 8 38 12 28 C20 30 26 36 30 45 C34 34 42 28 50 30 C46 40 38 48 30 50 C32 38 28 25 30 10' fill='none' stroke='black' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   /* Hand-drawn spark mark, a distinct sibling to the sprig for the Projects heading */
   --doodle-spark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Cpath d='M30 4 C32 18 32 18 30 30 C28 18 28 18 30 4 Z M30 56 C28 42 28 42 30 30 C32 42 32 42 30 56 Z M4 30 C18 28 18 28 30 30 C18 32 18 32 4 30 Z M56 30 C42 32 42 32 30 30 C42 28 42 28 56 30 Z' fill='black'/%3E%3C/svg%3E");
-
   /* Typography — serif carries display moments (name, section headings), grotesk carries body/UI */
   --font-body: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-display: 'Source Serif 4', Georgia, 'Times New Roman', serif;
@@ -119,6 +118,18 @@ footer.contact {
   padding-block: clamp(var(--space-8), 8vw, var(--space-9));
   border-top: 1px solid var(--line);
 }
+
+/* Education and Skills hold much less content than About/Experience/Projects —
+   tighter padding here reads as a deliberate "quick reference" beat instead of
+   the same generous rhythm repeated on sections with far less to fill it */
+.education,
+.skills {
+  padding-block: clamp(var(--space-7), 6vw, var(--space-8));
+}
+
+/* Alternating section backgrounds for quiet rhythm down the page */
+.about, .projects, .skills { background: var(--paper); }
+.experience, .education { background: var(--surface); }
 
 /* ---------------------------------------------------------------
    Hero
@@ -305,6 +316,10 @@ main h2, footer h2 {
   padding-left: 1.75rem;
 }
 
+/* Education entries are a single line (no description) — tighter grouping than
+   Experience's denser, description-bearing entries */
+.education .entry { padding-block: var(--space-4); }
+
 /* Timeline: a per-entry line segment (stacks into one continuous rule) plus a dot on top */
 .entry::before {
   content: '';
@@ -325,7 +340,7 @@ main h2, footer h2 {
   height: 0.5rem;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 3px var(--paper);
+  box-shadow: 0 0 0 3px var(--surface);
 }
 
 .entry:first-child { padding-top: 0; }
@@ -406,10 +421,6 @@ main h2, footer h2 {
 
 .project {
   padding-block: var(--space-5);
-}
-
-.project + .project {
-  border-top: 1px solid var(--line);
 }
 
 .project:first-child { padding-top: 0; }
